@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="registerForm" width="800" height="600" titletext="Login" onload="form_onload">
+    <Layouts>
+      <Layout height="600" width="800">
+        <Button id="btn00" taborder="0" text="btn00" left="71" top="37" width="120" height="23" onclick="btn00_onclick"/>
+        <Combo id="cbo00" taborder="1" text="cbo00" left="76" top="81" width="150" height="23" innerdataset="dsCboTest" codecolumn="value" datacolumn="value" onitemchanged="cbo00_onitemchanged"/>
+        <Edit id="edt00" taborder="2" left="81" top="134" width="150" height="23" value="testestset" text="testestset" readonly="false" inputmode="upper" password="false"/>
+        <MaskEdit id="msk00" taborder="3" left="85" top="187" width="90" height="23" format="9,999"/>
+        <TextArea id="txt00" taborder="4" left="91" top="238" width="179" height="62"/>
+        <Static id="sta00" taborder="5" text="sta00" left="59" top="330" width="120" height="23"/>
+        <Grid id="grd00" taborder="6" left="290" top="167" width="500" height="360" binddataset="dsTestGrid" autoenter="select" cellsizingtype="both">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="76"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="150"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="Row Type" edittype="checkbox"/>
+                <Cell col="1" text="아이디"/>
+                <Cell col="2" text="비밀번호"/>
+                <Cell col="3" text="userName"/>
+                <Cell col="4" text="userEmail"/>
+              </Band>
+              <Band id="body">
+                <Cell text="expr:dataset.getRowType(currow)" edittype="expr:comp.parent.fnSet()"/>
+                <Cell col="1" text="bind:userId" displaytype="text" edittype="text"/>
+                <Cell col="2" text="bind:userPw" displaytype="normal"/>
+                <Cell col="3" text="bind:userName" expandshow="hide"/>
+                <Cell col="4" text="bind:userEmail" edittype="mask" maskedittype="string" maskeditformat="****"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Tab id="tab00" taborder="7" tabindex="0" left="41" top="419" width="279" height="93">
+          <Tabpages>
+            <Tabpage id="Tabpage1" text="Tabpage1"/>
+            <Tabpage id="Tabpage2" text="Tabpage2"/>
+          </Tabpages>
+        </Tab>
+        <Button id="btn01" taborder="8" text="추가" left="326" top="116" width="120" height="23" onclick="btn01_onclick"/>
+        <Button id="btn02" taborder="9" text="삭제" left="478" top="112" width="120" height="23" onclick="btn02_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsMemberinsert">
+        <ColumnInfo>
+          <Column id="userId" type="STRING" size="10"/>
+          <Column id="userPw" type="STRING" size="10"/>
+          <Column id="userName" type="STRING" size="10"/>
+          <Column id="userEmail" type="STRING" size="20"/>
+          <Column id="userGender" type="STRING" size="10"/>
+          <Column id="userAddress" type="STRING" size="20"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="userId">TW2103215A</Col>
+            <Col id="userPw">twsc7980</Col>
+            <Col id="userName">박정연</Col>
+            <Col id="userEmail">tw@naver.com</Col>
+            <Col id="userGender">Female</Col>
+            <Col id="userAddress">korea</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsIdsearch">
+        <ColumnInfo>
+          <Column id="userId" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsIdok"/>
+      <Dataset id="dsCboTest">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="value" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="value">11111</Col>
+            <Col id="code">1</Col>
+          </Row>
+          <Row>
+            <Col id="value">22222</Col>
+            <Col id="code">2</Col>
+          </Row>
+          <Row>
+            <Col id="value">33333</Col>
+            <Col id="code">3</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsTestGrid" updatecontrol="true">
+        <ColumnInfo>
+          <Column id="userId" type="STRING" size="256"/>
+          <Column id="userPw" type="STRING" size="256"/>
+          <Column id="userName" type="STRING" size="256"/>
+          <Column id="userEmail" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="userId">1</Col>
+            <Col id="userPw">11</Col>
+            <Col id="userName">asdf</Col>
+            <Col id="userEmail">4</Col>
+          </Row>
+          <Row>
+            <Col id="userId">2</Col>
+            <Col id="userEmail">asdfasdf</Col>
+            <Col id="userName">6666</Col>
+            <Col id="userPw">sdfsdf</Col>
+          </Row>
+          <Row>
+            <Col id="userId">3</Col>
+            <Col id="userEmail">444</Col>
+            <Col id="userName">7777</Col>
+            <Col id="userPw">asdfasdfasdfrr</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsRecServer">
+        <ColumnInfo>
+          <Column id="A2" type="STRING" size="256"/>
+          <Column id="A4" type="STRING" size="256"/>
+          <Column id="Column0" type="STRING" size="256"/>
+          <Column id="Column1" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[
+this.cbo00_onitemchanged = function(obj:nexacro.Combo,e:nexacro.ItemChangeEventInfo)
+{
+	trace(this.cbo00.value);
+};
+
+this.chk00_onchanged = function(obj:nexacro.CheckBox,e:nexacro.CheckBoxChangedEventInfo)
+{
+	trace(this.chk00.value);
+};
+
+this.fnSet = function()
+{
+	this.alert("123")
+};
+this.fnReplyInsertin = function()
+{
+	var strSvcId    = "insertReplyInfo";
+	var strSvcUrl   = "/board/mainboard/boardList.do";
+	var inData      = "dsTestGrid=dsTestGrid:U";
+	var outData     = "dsRecServer=dsRecServer";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	this.gfnTransaction(    strSvcId , 		// transaction을 구분하기 위한 svc id값;
+							strSvcUrl , 	// trabsaction을 요청할 주소;
+							inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭;
+							outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭;
+							strArg , 		// 입력갑스로 보낼 arguments, strFormData="20120607";
+							callBackFnc , 	// 콜백 함수명;
+							"LIST"			// LIST/REG/MOD/RMV/PROC;
+						);		
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	if( errorCode != 0 )
+	{
+		trace(errorCode + ">>>" + errorMsg ); 
+				
+		//서버에서 다음과 같은 에러메시지를 받았습니다.\n{0}
+		this.gfnAlert("msg.server.error.msg",[errorMsg]);
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "insertReplyInfo" :
+			trace(this.dsRecServer.saveXML());
+
+		break;
+	}
+};
+
+
+this.btn00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.fnReplyInsertin();
+};
+
+this.btn01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.dsTestGrid.addRow();
+};
+
+this.btn02_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var objApp = nexacro.getApplication() ;
+	var bOK;
+	bOK = objApp.confirm( "삭제하겠습니?" , "TitleTest", "error" );
+	if(bOK)
+	{
+		this.alert("삭제됨");
+		this.dsTestGrid.deleteRow(this.dsTestGrid.rowposition);
+	}
+
+
+	
+	//this.dsTestGrid.setRowType(this.dsTestGrid.rowposition, "D");
+};
+]]></Script>
+  </Form>
+</FDL>
