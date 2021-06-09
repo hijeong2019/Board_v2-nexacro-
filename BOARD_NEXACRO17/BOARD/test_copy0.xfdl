@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="registerForm" width="1000" height="600" titletext="Login" onload="form_onload">
+    <Layouts>
+      <Layout height="600" width="1000">
+        <Grid id="grd00" taborder="0" left="20" top="150" width="940" height="420" binddataset="ds00" autofittype="col">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="No"/>
+                <Cell col="1" text="Gr"/>
+                <Cell col="2" text="Co"/>
+                <Cell col="3" text="Code"/>
+                <Cell col="4" text="Par"/>
+                <Cell col="5" text="Use"/>
+                <Cell col="6" text="Rem"/>
+                <Cell col="7" text="Regist"/>
+                <Cell col="8" text="Reg"/>
+                <Cell col="9" text="RegistDate"/>
+                <Cell col="10" text="Mod"/>
+                <Cell col="11" text="Date"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:No"/>
+                <Cell col="1" text="bind:Gr" displaytype="combocontrol" edittype="combo"/>
+                <Cell col="2" text="bind:Co"/>
+                <Cell col="3" text="bind:Code"/>
+                <Cell col="4" text="bind:Par"/>
+                <Cell col="5" text="bind:Use" edittype="combo" displaytype="combocontrol" combodataset="dsyn" combodatacol="value" combocodecol="code"/>
+                <Cell col="6" text="bind:Rem"/>
+                <Cell col="7" text="bind:Regist"/>
+                <Cell col="8" text="bind:Reg"/>
+                <Cell col="9" text="bind:RegistDate"/>
+                <Cell col="10" text="bind:Mod"/>
+                <Cell col="11" text="bind:Date"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Combo id="cbo00" taborder="1" text="cbo00" left="245" top="117" width="150" height="23"/>
+        <Button id="btn01" taborder="3" text="btn01" left="120" top="46" width="80" height="51"/>
+        <Button id="btn00" taborder="2" text="btn00" left="30" top="40" height="63" right="btn01:36"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds00">
+        <ColumnInfo>
+          <Column id="No" type="STRING" size="256"/>
+          <Column id="Gr" type="STRING" size="256"/>
+          <Column id="Co" type="STRING" size="256"/>
+          <Column id="Code" type="STRING" size="256"/>
+          <Column id="Par" type="STRING" size="256"/>
+          <Column id="Use" type="STRING" size="256"/>
+          <Column id="Rem" type="STRING" size="256"/>
+          <Column id="Regist" type="STRING" size="256"/>
+          <Column id="Reg" type="STRING" size="256"/>
+          <Column id="RegistDate" type="STRING" size="256"/>
+          <Column id="Mod" type="STRING" size="256"/>
+          <Column id="Date" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsyn">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="value" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">y</Col>
+            <Col id="value">y</Col>
+          </Row>
+          <Row>
+            <Col id="value">n</Col>
+            <Col id="code">n</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[]]></Script>
+  </Form>
+</FDL>

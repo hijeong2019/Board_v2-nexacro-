@@ -1,0 +1,447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="boardForm" width="800" height="600" titletext="Login" onload="form_onload">
+    <Layouts>
+      <Layout height="600" width="800">
+        <Static id="sta00_01" taborder="0" text="BOARD" left="41.13%" top="13" width="143" height="54" textAlign="center" font="bold 40px/19px &quot;Malgun Gothic&quot;" color="#5b92e4"/>
+        <Button id="btn_Logout" taborder="1" text="로그아웃" top="16" height="24" width="62" right="10" onclick="comm_Click" cursor="pointer" background="#5B92E4" boxShadow="1px 1px 2px 0px #7c7c7c" color="white"/>
+        <Static id="sta00" taborder="2" text="님이 로그인 중입니다" top="17" width="119" height="23" right="75"/>
+        <Static id="sta01" taborder="3" text="LIST" left="10" top="sta00_01:3" width="60" height="23" font="bold 24px/19px &quot;Malgun Gothic&quot;"/>
+        <Combo id="cbo_page" taborder="4" text="전체" top="72" width="114" height="22" right="220" index="0" value="all" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" cursor="pointer">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">all</Col>
+                <Col id="datacolumn">전체</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">게시글 아이디</Col>
+                <Col id="codecolumn">id</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">제목</Col>
+                <Col id="codecolumn">name</Col>
+              </Row>
+              <Row>
+                <Col id="datacolumn">내용</Col>
+                <Col id="codecolumn">description</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <Button id="btn_Search" taborder="5" text="검색" top="70" width="50" height="25" right="10" onclick="comm_Click" boxShadow="1px 1px 2px 0px #7c7c7c" color="#5b92e4" background="white" border="1px inset #5b92e4" cursor="pointer"/>
+        <Edit id="edt_search" taborder="6" top="70" width="150" height="24" displaynulltext="검색어 입력" right="65" onkeydown="edt_search_onkeydown" cursor="text"/>
+        <Grid id="grd_Board" taborder="7" left="1.25%" top="sta01:47.83%" autofittype="col" oncelldblclick="grd_Board_oncelldblclick" binddataset="dsBoard" right="10" bottom="35" cellsizingtype="col" onheadclick="grd_Board_onheadclick" autoenter="select">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="30"/>
+                <Column size="80"/>
+                <Column size="90"/>
+                <Column size="180"/>
+                <Column size="50"/>
+                <Column size="70"/>
+                <Column size="50"/>
+                <Column size="50"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="No"/>
+                <Cell col="1" text="게시글 아이디"/>
+                <Cell col="2" text="제목"/>
+                <Cell col="3" text="내용"/>
+                <Cell col="4" text="사용여부"/>
+                <Cell col="5" text="등록자"/>
+                <Cell col="6" text="댓글수"/>
+                <Cell col="7" text="조회수"/>
+              </Band>
+              <Band id="body">
+                <Cell text="expr:currow +1" textAlign="center"/>
+                <Cell col="1" textAlign="center" text="bind:id"/>
+                <Cell col="2" text="bind:name"/>
+                <Cell col="3" text="bind:description"/>
+                <Cell col="4" textAlign="center" text="bind:useYn" combodataset="dsUseYn" combocodecol="code" combodatacol="value"/>
+                <Cell col="5" textAlign="center" text="bind:regUser"/>
+                <Cell col="6" textAlign="right" text="bind:replyCnt"/>
+                <Cell col="7" textAlign="right" text="bind:hit"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Button id="btn_Insert" taborder="8" text="글 등록" height="24" onclick="comm_Click" background="white" color="#5b92e4" border="1px inset #5b92e4" cursor="pointer" boxShadow="1px 1px 2px 0px #7c7c7c" top="grd_Board:6" width="52" right="10"/>
+        <Static id="sta_userId" taborder="9" top="16" width="120" height="23" right="202" textAlign="right"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsBoard">
+        <ColumnInfo>
+          <Column id="isOk" type="string" size="256"/>
+          <Column id="description" type="string" size="32"/>
+          <Column id="hit" type="int" size="4"/>
+          <Column id="id" type="string" size="32"/>
+          <Column id="keyword" type="string" size="32"/>
+          <Column id="name" type="string" size="32"/>
+          <Column id="regUser" type="string" size="32"/>
+          <Column id="replyCnt" type="string" size="32"/>
+          <Column id="searchType" type="string" size="32"/>
+          <Column id="useYn" type="string" size="32"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsUseYn">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="value" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">Y</Col>
+            <Col id="value">Y</Col>
+          </Row>
+          <Row>
+            <Col id="code">N</Col>
+            <Col id="value">N</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="searchType" type="STRING" size="256"/>
+          <Column id="searchWord" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[/**
+*  @MenuPath    BOARD > BoardForm
+*  @FileName 	BoardForm.xfdl 
+*  @Creator     박정연
+*  @CreateDate 	2020.04.09
+*  @Desction    게시판 화면 구현
+
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2020.04.09     	consulting 	        최초 생성 
+*******************************************************************************
+*/
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.fnFormInit = function()
+	{
+		this.gfnFormOnLoad(this); //초기화[필수]
+		this.fnSearch(); //게시판 조회
+	}; 
+};
+
+//로그인한 아이디 출력
+var objApp = nexacro.getApplication();
+var loginId = objApp.gdsUserAccount.getColumn(0, "id");
+this.sta_userId.set_text(loginId);
+
+/************************************************************************************************
+* TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+//게시글 목록 조회, 검색
+this.fnBoardSelect = function()
+{
+	var strSvcId    = "selectBoardInfo";
+	var strSvcUrl   = "/board/mainboard/boardList.do";
+	var inData      = "dsSearch=dsSearch";
+	var outData     = "dsBoard=dsBoard";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	this.gfnTransaction(
+						strSvcId , 		// transaction을 구분하기 위한 svc id값;
+						strSvcUrl , 	// trabsaction을 요청할 주소;
+						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭;
+						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭;
+						strArg , 		// 입력갑스로 보낼 arguments, strFormData="20120607";
+						callBackFnc , 	// 콜백 함수명;
+						"LIST"			// LIST/REG/MOD/RMV/PROC;
+	);		
+};
+
+// //게시글 등록, 삭제
+// this.fnProc = function()
+// {
+// 	var strSvcId    = "boardProc";
+// 	var strSvcUrl   = "/board/mainboard/boardProc.do";
+// 	var inData      = "dsBoard=dsBoard:U";
+// 	var outData     = "";
+// 	var strArg      = "";
+// 	var callBackFnc = "fnCallback";
+// 	
+// 	this.gfnTransaction(
+// 						strSvcId , 		// transaction을 구분하기 위한 svc id값;
+// 						strSvcUrl , 	// trabsaction을 요청할 주소;
+// 						inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭, :U는 업데이트 된것만 전송;
+// 						outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭;
+// 						strArg , 		// 입력갑스로 보낼 arguments, strFormData="20120607";
+// 						callBackFnc , 	// 콜백 함수명;
+// 						"LIST"			// LIST/REG/MOD/RMV/PROC;
+// 	);
+// }
+
+/************************************************************************************************
+* CALLBACK 콜백 처리부분
+************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	if( errorCode != 0 )
+	{
+		trace(errorCode + ">>>" + errorMsg );
+		
+		//서버에서 다음과 같은 에러메시지를 받았습니다.\n{0}
+		this.gfnAlert("msg.server.error.msg",[errorMsg]);
+		return;
+	}
+	
+	switch(svcID)
+	{
+		case "selectBoardInfo" :
+			//trace(this.dsBoard.saveXML());
+			//그리드 데이터셋 바인딩 후 그리드 컬럼자동 매핑 
+			//this.grd_Board.createFormat();
+			break;
+			
+		case "boardProc" : 
+			//this.dsBoard.getColumn(this.dsBoard.rowposition, "id")
+			this.fnSearch();
+			break;
+	}
+};
+
+/************************************************************************************************
+* 사용자 FUNCTION 영역
+************************************************************************************************/
+/**
+* @description 게시글 조회
+*/
+this.fnSearch = function()
+{
+	//검색
+	if(this.fnSearchParamSet())
+	{
+		//조회
+		this.fnBoardSelect();
+	}
+};
+
+
+/**
+ * @description 검색 dataset 초기화
+*/
+this.fnSearchParamSet = function()
+{
+	//검색 DS 초기화
+	this.dsSearch.clearData();
+	
+	//검색 DS row 추가
+	var nRow = this.dsSearch.addRow();
+	
+	//검색
+	if(!this.gfnIsNull(this.edt_search.value))
+	{
+		this.dsSearch.setColumn(nRow,"searchType", this.cbo_page.value);
+		this.dsSearch.setColumn(nRow,"searchWord", this.edt_search.value);
+	}
+	else
+	{	
+		this.dsSearch.setColumn(nRow,"searchType", ""); //null일때 contorller에서 오류가 발생하기 때문에 null을 넣어준다
+		this.dsSearch.setColumn(nRow,"searchWord", "");
+	}
+	return true;
+};
+
+/*
+* @description 좌측문자열 채우기 PadLeft 함수
+*/
+this.fnLpad = function(str, padLen, padStr)
+{
+	if (padStr.length > padLen) 
+	{
+        trace("오류 : 채우고자 하는 문자열이 요청 길이보다 큽니다");
+        return str;
+    }
+	
+    str += ""; // 문자로
+    padStr += ""; // 문자로
+	
+    while (str.length < padLen)
+	str = padStr + str;
+    str = str.length >= padLen ? str.substring(0, padLen) : str;
+	
+    return str;
+};
+
+// /*
+// * @description 글등록 공백입력 시 예외처리
+// */
+// this.fnValidation = function()
+// {
+// 	for(var i=0; i<this.dsBoard.rowcount; i++) 
+// 	{
+// 		var chkName, chkdescription, chkuseYn;
+// 		var nCnt = 0;
+// 		
+// 		if(this.dsBoard.getRowType(i) == 2)
+// 		{
+// 			chkname = this.dsBoard.getColumn(i, "name")
+// 			chkdescription = this.dsBoard.getColumn(i, "description")
+// 			chkuseYn = this.dsBoard.getColumn(i, "useYn")
+// 			
+// 			if(this.gfnIsNull(chkname) || this.gfnIsNull(chkdescription) || this.gfnIsNull(chkuseYn))
+// 			{
+// 				nCnt++;
+// 			}
+// 		}
+// 	}
+// 	
+// 	if(nCnt > 0)
+// 	{
+// 		this.alert("입력란을 모두 입력해주세요");
+// 		return false;	
+// 	}
+// 	else
+// 		return true;
+// };
+/************************************************************************************************
+* 각 COMPONENT 별 EVENT 영역
+************************************************************************************************/
+this.comm_Click = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	switch(obj.name)
+	{
+		case "btn_Insert" : 
+			this.fnInsert();
+		break;
+			
+		case "btn_Search" : 
+			this.fnSearch();
+		break;
+		
+		case "btn_Logout" : 		
+			var objApp = nexacro.getApplication();
+			var bOK = objApp.confirm("로그아웃하시겠습니까?" , "로그아웃" );
+			if(bOK)
+			{
+				var objApp = nexacro.getApplication();
+				objApp.gdsUserAccount.clearData(); //session 초기화
+				//this.gdsUserAccount.saveXML();
+				this.dsBoard.clear
+				this.alert("로그아웃됩니다.");				
+				this.parent.parent.parent.parent.parent.form.fnSetUrl("BOARD::LoginForm.xfdl");	
+			}
+			else
+			{
+				this.alert("취소되었습니다.");
+			}
+		break;
+	}
+};
+
+/*
+*	@description 게시글 상세보기 팝업
+*/
+this.grd_Board_oncelldblclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)//cell 더블클릭했을 때 실행되는 이벤트
+{
+	if(e.col == 0 || e.col == 1) //0,1번째 컬럼 선택 시 
+	{
+		//팝업 호출
+		var sTitle = "BOARD DETAIL";
+		var sFormUrl  = "BOARD::BoardlistForm.xfdl";
+		
+		var oArg = {
+					paramJson:{	
+								"boardId" : this.dsBoard.getColumn(e.row, "id")
+					}
+					,paramDataset:null
+					,paramUrl:sFormUrl
+		};
+		var oOption = {title:sTitle,width:"1000",height:"750"};	//top, left를 지정하지 않으면 가운데정렬 //"top:20,left:370"
+		var sPopupCallBack = "fnPopupCallback";
+		this.gfnOpenPopup("boardDetailPopup","cmm::cmmPopup.xfdl", oArg, sPopupCallBack, oOption);
+	}
+};
+
+/*
+*	@description 게시글 등록 팝업
+*/
+this.fnInsert = function()
+{
+	var paramJson = this.getOwnerFrame().paramJson;
+	
+	//게시글 아이디 설정
+	for(var i=0; i<this.dsBoard.rowcount; i++)
+	{
+		var max = -987654321;
+		var id = this.dsBoard.getColumn(i, "id");
+		
+		id = id.split("-")[1];
+		
+		if(max < id)
+		{
+			max = id;
+		}
+		max++;
+	}
+
+	//팝업 호출
+	var sTitle = "BOARD INSERT";
+	var sFormUrl  = "BOARD::BoardInsertForm.xfdl";
+	
+	var oArg = {
+					paramJson:{	
+								  "boardId"		: this.fnLpad(max, 5, '0')
+							  }
+				   ,paramDataset:null
+				   ,paramUrl:sFormUrl
+			   };
+	var oOption = {title:sTitle,width:"1000",height:"750"};	//top, left를 지정하지 않으면 가운데정렬 //"top:20,left:370"
+	var sPopupCallBack = "fnPopupCallback";
+	this.gfnOpenPopup("boardInsertPopup","cmm::cmmPopup.xfdl", oArg, sPopupCallBack, oOption);
+};
+
+/*
+*	@description 팝업 콜백 함수
+*/
+this.fnPopupCallback = function(strId, strVal)
+{
+	var rtnObj;
+	
+	//if(!this.gfnIsNull(strVal))
+	//rtnObj = JSON.parse(strVal);
+	
+	switch(strId)
+	{
+		case "boardDetailPopup":
+			this.fnSearch();
+		break;	
+		
+		case "boardInsertPopup":
+			this.fnSearch();
+		break;	
+	}
+};
+
+this.edt_search_onkeydown = function(obj:nexacro.Edit,e:nexacro.KeyEventInfo)
+{
+	if(e.keycode == 13)
+	{
+		this.btn_Search.click();
+	}
+};
+]]></Script>
+  </Form>
+</FDL>

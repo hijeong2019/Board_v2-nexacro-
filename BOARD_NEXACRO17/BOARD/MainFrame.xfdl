@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="MainFrame" width="800" height="600" titletext="메인 Frame" onload="form_onload">
+    <Layouts>
+      <Layout height="600" width="800">
+        <Div id="divMain" taborder="0" text="div00" left="0" top="0" url="BOARD::LoginForm.xfdl" right="0" bottom="0" minwidth=""/>
+        <Static id="sta00" taborder="1" text="메인Frame" left="0" top="0" width="120" height="23"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  @MenuPath    BOARD > LoginForm
+*  @FileName 	LoginForm.xfdl 
+*  @Creator     박정연
+*  @CreateDate 	2020.04.09
+*  @Desction    게시판 화면 구현
+
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2020.04.09     	consulting 	        최초 생성 
+*******************************************************************************
+*/
+
+/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+ 
+// 사용자 userEmpNo 
+this.fv_objApp 	  		= this.gfnGetApplication();
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	//this.fnFormInit(); 
+};
+
+this.fnSetUrl = function(url){
+	this.divMain.set_url(url);
+}
+
+]]></Script>
+    <Objects>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="searchId" type="STRING" size="256"/>
+          <Column id="searchPw" type="STRING" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsLogin"/>
+    </Objects>
+  </Form>
+</FDL>

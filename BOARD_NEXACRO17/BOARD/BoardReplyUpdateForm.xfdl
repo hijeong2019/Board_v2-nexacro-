@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="BoardReplyRegForm" width="640" height="480" titletext="Login" onload="form_onload">
+    <Layouts>
+      <Layout height="480" width="640">
+        <Static id="sta00" taborder="0" text="작성자" left="115" top="157" width="50" height="36" font="16px/19px &quot;Malgun Gothic&quot;"/>
+        <Static id="sta00_00" taborder="1" text="내용" left="115" top="213" width="50" height="23" font="16px/19px &quot;Malgun Gothic&quot;"/>
+        <Edit id="edt_replywriter" taborder="2" left="183" top="162" width="307" height="26"/>
+        <TextArea id="txt_reply" taborder="3" left="182" top="213" width="307" height="120"/>
+        <Button id="btn_RegReply" taborder="4" text="저장" left="438" top="101" width="50" height="30" onclick="btn_boardupdate_onclick" boxShadow="1px 1px 2px 0px #7c7c7c" color="white" cursor="pointer" background="#5b92e4"/>
+        <Static id="sta01" taborder="5" text="수정" left="300" top="50" width="50" height="38" font="bold 24px/19px &quot;Malgun Gothic&quot;" onclick="sta01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="dsRreplyDetail">
+        <ColumnInfo>
+          <Column id="contents" type="string" size="32"/>
+          <Column id="grp_id" type="int" size="4"/>
+          <Column id="id" type="string" size="32"/>
+          <Column id="isOk" type="string" size="32"/>
+          <Column id="level_id" type="int" size="4"/>
+          <Column id="mod_date" type="datetime" size="17"/>
+          <Column id="parent_id" type="int" size="4"/>
+          <Column id="reg_date" type="datetime" size="17"/>
+          <Column id="rid" type="int" size="4"/>
+          <Column id="seq_id" type="int" size="4"/>
+          <Column id="writer" type="string" size="32"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="dsSearch">
+        <ColumnInfo>
+          <Column id="rid" type="INT" size="4"/>
+        </ColumnInfo>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[/************************************************************************************************
+ * FORM 변수 선언 영역
+ ************************************************************************************************/
+this.fv_objApp 	  		= this.gfnGetApplication();
+
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	var paramJson = this.getOwnerFrame().paramJson;
+	
+	//부모창에서 넘어 온 검색어가 있을 경우.
+	//edit 에 set 후 검색 함.
+	if( !this.gfnIsNull(paramJson.rid) )
+	{
+		this.dsSearch.clearData();
+		this.dsSearch.addRow();
+		
+		this.dsSearch.setColumn(0, "rid", paramJson.rid);
+		this.fnBoardDetailSelect();
+	}
+};
+
+
+/************************************************************************************************
+* TRANSACTION 서비스 호출 처리
+************************************************************************************************/
+//댓글 상세보기
+this.fnBoardDetailSelect = function()
+{
+	var strSvcId    = "selectReplyDetailInfo";
+	var strSvcUrl   = "/board/mainboard/replyDetail.do";
+	var inData      = "dsSearch=dsSearch";
+	var outData     = "dsRreplyDetail=dsRreplyDetail";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	this.gfnTransaction(
+							strSvcId , 		// transaction을 구분하기 위한 svc id값;
+							strSvcUrl , 	// trabsaction을 요청할 주소;
+							inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭;
+							outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭;
+							strArg , 		// 입력갑스로 보낼 arguments, strFormData="20120607";
+							callBackFnc , 	// 콜백 함수명;
+							"LIST"			// LIST/REG/MOD/RMV/PROC;
+						);		
+};
+
+//댓글 수정
+this.fnReplyInsertin = function()
+{
+	var strSvcId    = "updateReplyInfo";
+	var strSvcUrl   = "/board/mainboard/updateReply.do";
+	var inData      = "dsRreplyDetail=dsRreplyDetail";
+	var outData     = "";
+	var strArg      = "";
+	var callBackFnc = "fnCallback";
+	
+	this.gfnTransaction(
+							strSvcId , 		// transaction을 구분하기 위한 svc id값;
+							strSvcUrl , 	// trabsaction을 요청할 주소;
+							inData , 		// 입력값으로 보낼 dataset id , a=b형태로 실제이름과 입력이름을 매칭;
+							outData , 		// 처리결과값으로 받을 dataset id, a=b형태로 실제이름과 입력이름을 매칭;
+							strArg , 		// 입력갑스로 보낼 arguments, strFormData="20120607";
+							callBackFnc , 	// 콜백 함수명;
+							"LIST"			// LIST/REG/MOD/RMV/PROC;
+						);		
+};
+
+/************************************************************************************************
+ * CALLBACK 콜백 처리부분
+ ************************************************************************************************/
+this.fnCallback = function(svcID, errorCode, errorMsg)
+{
+	if( errorCode != 0 )
+	{
+		trace(errorCode + ">>>" + errorMsg ); 
+				
+		//서버에서 다음과 같은 에러메시지를 받았습니다.\n{0}
+		this.gfnAlert("msg.server.error.msg",[errorMsg]);
+		return;
+	}
+	
+	switch(svcID)
+	{	
+		case "selectReplyDetailInfo" :
+			//trace(this.dsRreplyDetail.saveXML());
+			
+			var objApp = nexacro.getApplication();
+			var loginId = objApp.gdsUserAccount.getColumn(0, "id");
+			var writer = this.dsRreplyDetail.getColumn(0, "writer");
+			
+			if(loginId != writer)
+			{
+				this.edt_replywriter.set_enable(false);
+				this.txt_reply.set_enable(false);
+				this.btn_RegReply.set_enable(false);
+				this.alert("작성자만 수정 가능합니다.");
+			}
+			else if(loginId == writer)
+			{
+				this.edt_replywriter.set_enable(false);
+				this.txt_reply.set_enable(true);
+				this.btn_RegReply.set_enable(true);
+			}
+		break;
+		
+		case "updateReplyInfo" :
+			//trace(this.dsRreplyDetail.saveXML());
+			
+			if(this.dsRreplyDetail.rowcount > 0)
+			{
+				this.alert("수정되었습니다.");
+				this.fnBoardDetailSelect();
+			}
+		break;
+	}
+};
+
+/************************************************************************************************
+* 사용자 FUNCTION 영역
+************************************************************************************************/
+this.fnValidation = function()
+{	
+	if(this.gfnIsNull(this.txt_reply.value) )
+	{
+		this.alert("내용을 입력해주세요.");
+		return false;	
+	}
+	else 
+		return true;
+};
+
+ /************************************************************************************************
+ * 각 COMPONENT 별 EVENT 영역
+ ************************************************************************************************/
+this.btn_boardupdate_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{	
+	if(this.fnValidation())
+	{
+		this.fnReplyInsertin();
+	}
+};
+]]></Script>
+    <Bind>
+      <BindItem id="item0" compid="edt_replywriter" propid="value" datasetid="dsRreplyDetail" columnid="writer"/>
+      <BindItem id="item1" compid="txt_reply" propid="value" datasetid="dsRreplyDetail" columnid="contents"/>
+    </Bind>
+  </Form>
+</FDL>

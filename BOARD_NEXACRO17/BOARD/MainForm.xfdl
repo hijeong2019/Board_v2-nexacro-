@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.1">
+  <Form id="MainForm" width="1168" height="726" titletext="메인화면" onload="form_onload" onsize="MainForm_onsize">
+    <Layouts>
+      <Layout height="726" width="1168">
+        <Div id="div_Boardform" taborder="0" text="div00" left="0" top="-4" width="1170" height="724" url="BOARD::BoardForm.xfdl"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[/**
+*  @MenuPath    BOARD > MainForm
+*  @FileName 	MainForm.xfdl 
+*  @Creator     박정연
+*  @CreateDate 	2020.04.09
+*  @Desction    게시판 화면 구현
+
+************** 소스 수정 이력 ***********************************************
+*  date          		Modifier                Description
+*******************************************************************************
+*  2020.04.09     	consulting 	        최초 생성 
+*******************************************************************************
+*/
+/***********************************************************************************************
+* FORM EVENT 영역(onload)
+/***********************************************************************************************/
+// this.MainForm_onsize = function(obj:nexacro.Form,e:nexacro.SizeEventInfo) //Form의 사이즈가 변할때 실행
+// {
+// 	this.div00.form.fnFormInit();
+// };
+
+
+/**
+* @description Form이 로드됬을 때 실행
+*/
+this.form_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.div_Boardform.form.fnFormInit();
+};
+]]></Script>
+    <Objects/>
+  </Form>
+</FDL>
