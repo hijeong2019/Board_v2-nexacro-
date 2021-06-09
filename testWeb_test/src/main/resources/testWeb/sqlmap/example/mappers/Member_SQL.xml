@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="testWeb.member.service.impl.MemberMapper"> <!-- Mapper 인터페이스 경로 -->
+
+	<resultMap id="member" type="testWeb.member.service.MemberVO">
+		<result property="userid" column="USERID"/>
+		<result property="userpw" column="USERPW"/>
+		<result property="username" column="USERNAME"/>
+		<result property="useremail" column="USEREMAIL"/>
+		<result property="usergender" column="USERGENDER"/>
+		<result property="useraddress" column="USERADDRESS"/>
+	</resultMap>
+
+	<insert id="insertMember" parameterType="MemberVO">
+
+		INSERT INTO MEMBER ( USERID
+							, USERPW
+							, USERNAME
+							, USEREMAIL
+							, USERGENDER
+							, USERADDRESS )
+		VALUES ( #{userid}
+			   , #{userpw}
+			   , #{username}
+			   , #{useremail}
+			   , #{usergender}
+			   , #{useraddress} )
+
+	</insert>
+	
+	<select id="idCheck" parameterType="MemberVO" resultType="int">
+		SELECT 
+			count(*) 
+		FROM MEMBER
+		WHERE 1=1
+			  AND USERID = #{userid}
+	</select>
+
+	<select id="loginCheck" parameterType="MemberVO" resultType="int"> <!-- parametertype이 String이기 때문에 MemberVO or String으로 쓴다 -->
+		SELECT 
+			count(*)
+		FROM MEMBER
+		WHERE 1=1
+			  AND USERID = #{userid} 
+			  AND USERPW = #{userpw}
+	</select>
+	
+
+</mapper>

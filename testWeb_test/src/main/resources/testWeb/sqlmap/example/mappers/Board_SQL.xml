@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="testWeb.board.service.impl.BoardMapper"> <!-- Mapper 인터페이스 경로 -->
+
+	<resultMap id="board" type="testWeb.board.service.BoardVO">
+		<result property="id" column="ID"/>
+		<result property="name" column="NAME"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="useYn" column="USE_YN"/>
+		<result property="regUser" column="REG_USER"/>
+		<result property="hit" column="HIT"/>
+		<result property="replyCnt" column="replyCnt"/>
+		<result property="searchType" column="searchType"/>
+		<result property="keyword" column="keyword"/>
+	</resultMap>
+
+	<select id="listCount" resultType="int"> <!-- 게시글 총 갯수 -->
+		SELECT COUNT (ID)
+		FROM BOARD
+	</select>
+
+	<select id="selectBoardList" resultMap="board" resultType="BoardVO" parameterType="BoardPageVO"> <!-- 게시판 목록 + 페이징 기능rNUM + 댓글수replyCnt + 검색 --> 
+		SELECT  ID 
+				, NAME 
+				, DESCRIPTION 
+				, USE_YN 
+				, REG_USER 
+				, HIT 
+				, rNUM
+				, replyCnt
+		FROM ( SELECT B.*
+				, ROW_NUMBER() OVER (ORDER BY ID) AS rNUM
+				, ( SELECT 
+						COUNT(*) 
+				   	FROM REPLY
+				   	WHERE 1=1 
+				   		  AND ID=B.ID) AS replyCnt
+			  FROM BOARD B
+			  WHERE 1=1
+			  <!-- <include refid="search"></include> -->
+			  ) mp
+		WHERE 1=1
+			  AND rNUM BETWEEN #{start} AND #{end}
+		ORDER BY ID;
+	</select>
+
+	<select id="searchCount" resultType="int" parameterType="String"> <!-- 게시글 검색 갯수 -->
+		SELECT 
+			COUNT(*)
+		FROM BOARD
+		WHERE 1=1
+		<include refid="search"></include>
+	</select>
+	
+	<sql id="search">
+		<choose>
+			<when test="searchType == 'all'">
+				AND ID LIKE '%' + #{keyword} + '%'
+					OR NAME LIKE '%' + #{keyword} + '%'
+					OR DESCRIPTION LIKE '%' + #{keyword} + '%'
+			</when>
+			<otherwise>
+				AND #{searchType} LIKE '%' + #{keyword} + '%'
+			</otherwise>
+		</choose>
+	</sql>
+<!-- 	
+	
+		<if test="searchType != null">
+			<if test="searchType == 'i'.toString()">AND ID LIKE '%' + #{keyword} + '%'</if>
+			<if test="searchType == 'n'.toString()">AND NAME LIKE '%' + #{keyword} + '%'</if>
+			<if test="searchType == 'd'.toString()">AND DESCRIPTION LIKE '%' + #{keyword} + '%'</if>
+			<if test="searchType == 'nd'.toString()">AND (NAME LIKE '%' + #{keyword} + '%') or (DESCRIPTION LIKE '%' + #{keyword} + '%')</if>
+		</if>
+ -->
+
+	<update id="boardHit" parameterType="String"> <!-- 조회수 -->
+		UPDATE BOARD
+		SET    HIT = HIT+1 
+		WHERE  1=1
+			   AND ID=#{id}
+	</update>
+		
+	<select id="selectBoard" resultMap="board" parameterType="String"> <!-- 게시글 상세페이지 -->
+		SELECT  A.ID 
+			  , A.NAME 
+		      , A.DESCRIPTION 
+		      , A.USE_YN 
+		      , A.REG_USER 
+		      , (SELECT 
+		      		COUNT(ID) 
+		        FROM REPLY B
+		        WHERE A.ID = B.ID) AS replyCnt 
+		FROM BOARD A
+		WHERE 1=1
+			  AND A.ID=#{id}
+	</select>
+	
+	<insert id="insertBoard" > <!-- 게시글 등록 -->
+		INSERT INTO BOARD ( ID 
+							, NAME 
+							, DESCRIPTION 
+							, USE_YN 
+							, REG_USER  )
+		VALUES ( #{id}
+				, #{name}
+				, #{description}
+				, #{useYn}
+				, #{regUser} )
+	</insert>
+	
+	<update id="updateBoard"> <!-- 게시글 수정 -->
+		UPDATE BOARD  
+		SET NAME=#{name}
+			, DESCRIPTION=#{description}
+			, USE_YN=#{useYn}
+			, REG_USER=#{regUser}
+		WHERE 1=1
+			  AND ID=#{id}
+	</update>
+	
+	<delete id="deleteBoard"> <!-- 게시글 삭제 -->
+		DELETE FROM BOARD  
+		WHERE 1=1
+			  AND ID=#{id}
+	</delete>
+
+</mapper>
