@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tims.board.member.service.impl.MemberMapper">
+	<resultMap id="selectMemberInfo" type="MemberVO">
+		<result property="cnt"			column="CNT"/>
+		<result property="userid"		column="USERID"/>
+		<result property="userpw"       column="USERPW"/>
+		<result property="username"     column="USERNAME"/>
+		<result property="useremail"    column="USEREMAIL"/>
+		<result property="usergender"   column="USERGENDER"/>
+		<result property="useraddress"  column="USERADDRESS"/>
+	</resultMap>
+	
+	<select id="selectLoginList" parameterType="Map" resultMap="selectMemberInfo"> <!-- 로그인 -->
+	    SELECT 
+	    		  USERID
+				, USERPW
+				, USERNAME
+				, USEREMAIL
+				, USERGENDER
+				, USERADDRESS
+	  	FROM MEMBER
+	  	WHERE 1=1
+	  	AND USERID = #{searchId}
+	  	AND USERPW = #{searchPw}
+	</select>
+	
+	<insert id="insertMember" parameterType="Map" > <!-- 회원가입 -->
+		INSERT INTO MEMBER (  USERID
+							, USERPW
+							, USERNAME
+							, USEREMAIL
+							, USERGENDER
+							, USERADDRESS )
+					VALUES (  #{userId}
+							, #{userPw}
+							, #{userName}
+							, #{userEmail}
+							, #{userGender}
+							, #{userAddress} )
+	</insert>
+	
+	<select id="idCheck" parameterType="Map" resultMap="selectMemberInfo"> <!-- 중복체크 -->
+		SELECT 
+				count(USERID) as CNT
+		FROM MEMBER
+		WHERE 1=1
+		AND USERID = #{userId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tims.board.reply.service.impl.ReplyMapper">
+	<resultMap id="selectreplyInfo" type="ReplyVO">
+		<result property="isOk" 		column="IS_OK"/>
+		<result property="id" 			column="ID"/>
+		<result property="rid" 			column="RID"/>
+		<result property="writer" 		column="WRITER"/>
+		<result property="contents" 	column="CONTENTS"/>
+		<result property="grp_id" 		column="GRP_ID"/>
+		<result property="seq_id" 		column="SEQ_ID"/>
+		<result property="level_id" 	column="LEVEL_ID"/>
+		<result property="parent_id" 	column="PARENT_ID"/>
+		<result property="reg_date" 	column="REG_DATE"/>
+		<result property="mod_date" 	column="MOD_DATE"/>
+	</resultMap>
+	
+	<select id="readReply" parameterType="Map" resultMap="selectreplyInfo"> <!-- 댓글 목록 : 오름차순 -->
+		SELECT  
+				'0' AS IS_OK
+				, ID 
+				, RID 
+				, WRITER 
+				, CONTENTS 
+				, GRP_ID
+				, SEQ_ID
+				, LEVEL_ID
+				, PARENT_ID
+				, REG_DATE
+		FROM REPLY
+		WHERE 1=1
+		AND ID=#{searchBoardId}
+		ORDER BY GRP_ID DESC, SEQ_ID ASC
+	</select>
+	
+	<insert id="insertReply"> <!-- 댓글 등록 --> 
+		INSERT INTO REPLY ( ID
+							, RID
+							, WRITER
+							, CONTENTS
+							, GRP_ID
+							, PARENT_ID
+							, REG_DATE )
+					VALUES ( #{boardId}
+							, ( SELECT 
+									ISNULL(MAX(RID)+1, 1)
+								FROM REPLY)
+							, #{writer}
+							, #{contents}
+							, ( SELECT 
+									ISNULL(MAX(GRP_ID)+1, 1)
+								FROM REPLY)
+							, 0
+							, GETDATE() )
+	</insert>
+	
+	<update id="updateSeq" parameterType="Map"> <!-- 답글 시 SEQ_ID 증가 -->
+		UPDATE REPLY
+		SET 
+			SEQ_ID=SEQ_ID+1
+		WHERE 1=1
+		AND GRP_ID=#{grp_id}
+		AND SEQ_ID>#{seq_id}
+	</update>
+	
+	<insert id="insertreReply"> <!-- 답글 등록 -->
+		INSERT INTO REPLY ( ID
+							, RID
+							, WRITER
+							, CONTENTS
+							, GRP_ID
+							, SEQ_ID
+							, LEVEL_ID
+							, PARENT_ID
+							, REG_DATE )
+				   VALUES ( #{id}
+							, ( SELECT 
+									MAX(RID)+1
+								FROM REPLY)
+							, #{writer}
+							, #{contents}
+							, ( SELECT 
+									GRP_ID
+								FROM REPLY
+								WHERE 1=1
+								AND RID=#{rid} )
+							, ( SELECT 
+									MAX(SEQ_ID)+1
+								FROM REPLY
+								WHERE 1=1
+								AND RID=#{rid} )
+							, ( SELECT 
+									ISNULL(MAX(LEVEL_ID)+1, 1)
+								FROM REPLY
+								WHERE 1=1
+								AND RID=#{rid} )
+							, ( SELECT 
+									RID
+								FROM REPLY
+								WHERE 1=1
+								AND RID=#{rid} )
+							, GETDATE() )
+	</insert>
+
+	<select id="ridreadReply" parameterType="Map" resultMap="selectreplyInfo" > <!-- 댓글 상세보기 -->
+		SELECT  
+				 ID
+				, RID
+				, WRITER
+				, CONTENTS
+				, GRP_ID
+				, SEQ_ID
+				, LEVEL_ID
+		FROM REPLY
+		WHERE 1=1
+		AND RID=#{rid}
+	</select> 
+	
+	<update id="updateReply" parameterType="Map"> <!-- 댓글 수정 -->
+		UPDATE REPLY
+		SET    
+			WRITER=#{writer}
+		   , CONTENTS=#{contents}
+		   , MOD_DATE=GETDATE()
+		WHERE 1=1
+		AND RID=#{rid}
+	</update>
+	
+	<delete id="deleteReply" parameterType="Map"> <!-- 댓글/ 하위 답글 삭제 -->
+		WITH CTE AS 
+		(
+			SELECT 
+					 ID
+					, RID
+					, WRITER
+					, CONTENTS
+					, GRP_ID
+					, SEQ_ID
+					, LEVEL_ID
+					, PARENT_ID
+					, REG_ID
+					, REG_DATE
+					, MOD_ID
+					, MOD_DATE
+			FROM REPLY
+			WHERE 1=1
+			AND PARENT_ID = #{rid}
+				UNION ALL
+			SELECT 
+					 B.ID
+					, B.RID
+					, B.WRITER
+					, B.CONTENTS
+					, B.GRP_ID
+					, B.SEQ_ID
+					, B.LEVEL_ID
+					, B.PARENT_ID
+					, B.REG_ID
+					, B.REG_DATE
+					, B.MOD_ID
+					, B.MOD_DATE
+			FROM REPLY B, CTE
+			WHERE 1=1
+			AND B.PARENT_ID = CTE.RID
+		)
+		DELETE FROM REPLY
+		WHERE 1=1
+		AND RID IN (SELECT RID FROM CTE)
+		
+		DELETE FROM REPLY 
+		WHERE 1=1 
+		AND RID = #{rid}
+	</delete>
+	
+</mapper>

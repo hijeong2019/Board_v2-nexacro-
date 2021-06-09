@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tims.board.mainboard.service.impl.BoardMapper">
+	<resultMap id="selectboardInfo" type="BoardVO">
+		<result property="isOk" 		column="IS_OK"/>
+		<result property="id" 			column="ID"/>
+		<result property="name"			column="NAME"/>
+		<result property="description"  column="DESCRIPTION"/>
+		<result property="useYn" 		column="USE_YN"/>
+		<result property="regUser" 		column="REG_USER"/>
+		<result property="hit" 			column="HIT"/>
+		<result property="replyCnt" 	column="REPLYCOUNT"/>
+		<result property="searchType" 	column="searchType"/>
+		<result property="keyword" 		column="keyword"/>
+	</resultMap>
+	
+	<select id="selectBoardList" parameterType="Map" resultMap="selectboardInfo"> <!-- 게시판 목록 + 댓글수 REPLYCOUNT + 검색 -->
+	    SELECT  
+	    		'0' AS IS_OK
+	    		, ID 
+				, NAME 
+				, DESCRIPTION 
+				, USE_YN 
+				, REG_USER 
+				, HIT 
+				, REPLYCOUNT
+		FROM ( 
+				SELECT 
+						ID 
+						, NAME 
+						, DESCRIPTION 
+						, USE_YN 
+						, REG_USER 
+						, HIT 
+						, ( SELECT 
+								  COUNT(*) 
+							FROM REPLY
+							WHERE 1=1 
+							AND ID=B.ID) AS REPLYCOUNT
+				FROM BOARD B
+				WHERE 1=1
+				<choose>
+					<when test="searchType == 'id'">
+						AND ID LIKE '%' + #{searchWord} + '%' 
+					</when>	
+					<when test="searchType == 'name'">
+						AND NAME LIKE '%' + #{searchWord} + '%' 
+					</when>	
+					<when test="searchType == 'description'">
+						AND DESCRIPTION LIKE '%' + #{searchWord} + '%'
+					</when>	
+					<otherwise>
+						AND ID LIKE '%' + #{searchWord} + '%' 
+						OR NAME LIKE '%' + #{searchWord} + '%' 
+						OR DESCRIPTION LIKE '%' + #{searchWord} + '%'
+					</otherwise>
+				</choose>
+				) mp
+		ORDER BY ID
+	</select>
+	
+	<select id="selectBoard" parameterType="Map" resultMap="selectboardInfo"> <!-- 게시글 상세보기 -->
+		SELECT  
+				 A.ID 
+				, A.NAME 
+				, A.DESCRIPTION 
+				, A.USE_YN 
+				, A.REG_USER 
+				, ( SELECT 
+						COUNT(ID) 
+					FROM REPLY B
+					WHERE A.ID = B.ID) AS REPLYCOUNT 
+		FROM BOARD A
+		WHERE 1=1
+		AND A.ID=#{searchBoardId}
+	</select>
+	
+	<update id="boardHit" parameterType="Map"> <!-- 조회수 -->
+		UPDATE BOARD
+		SET    
+			HIT = HIT+1 
+		WHERE  1=1
+		AND ID=#{searchBoardId}
+	</update>
+	
+	<insert id="insertBoard" > <!-- 게시글 등록 -->
+		INSERT INTO BOARD ( ID 
+							, NAME 
+							, DESCRIPTION 
+							, USE_YN 
+							, REG_USER  )
+					VALUES ( #{id}
+							, #{name}
+							, #{description}
+							, #{useYn}
+							, #{regUser} )
+	</insert>
+	
+	<update id="updateBoard" parameterType="Map"> <!-- 게시글 수정 -->
+		UPDATE BOARD  
+		SET 
+			  NAME=#{name}
+			, DESCRIPTION=#{description}
+			, USE_YN=#{useYn}
+			, REG_USER=#{regUser}
+		WHERE 1=1
+		AND ID=#{id}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="Map"> <!-- 게시글 삭제 -->
+		DELETE FROM BOARD  
+		WHERE 1=1
+		AND ID=#{id}
+	</delete>
+	
+</mapper>
